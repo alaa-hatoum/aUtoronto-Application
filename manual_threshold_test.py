@@ -1,13 +1,21 @@
 import cv2 as cv
+import pdb
+
 
 max_value = 255
 max_value_H = 360//2
 low_H = 0
 low_S = 0
 low_V = 0
+low_H_list = []
+low_S_list = []
+low_V_list = []
 high_H = max_value_H
 high_S = max_value
 high_V = max_value
+high_H_list = []
+high_S_list = []
+high_V_list = []
 low_H_name = 'Low H'
 low_S_name = 'Low S'
 low_V_name = 'Low V'
@@ -54,6 +62,8 @@ def on_low_V_thresh_trackbar(val):
     cv.setTrackbarPos(low_V_name, window_detection_name, low_V)
     
 def on_high_V_thresh_trackbar(val):
+    global low_V
+    global high_V
     high_V = val
     high_V = max(high_V, low_V+1)
     cv.setTrackbarPos(high_V_name, window_detection_name, high_V)
@@ -69,14 +79,26 @@ cv.createTrackbar(high_S_name, window_detection_name , high_S, max_value, on_hig
 cv.createTrackbar(low_V_name, window_detection_name , low_V, max_value, on_low_V_thresh_trackbar)
 cv.createTrackbar(high_V_name, window_detection_name , high_V, max_value, on_high_V_thresh_trackbar)
 
-image = cv.imread(r'C:\Users\alaah\OneDrive\Desktop\aUtoronto-Application\2018Proj1_train\001.png')
+image = cv.imread(r'C:\Users\alaah\OneDrive\Desktop\aUtoronto-Application\2018Proj1_train\5.9.png')
 hsvimage = cv.cvtColor(image, cv.COLOR_BGR2HSV)
 thresholdimage = cv.inRange(hsvimage, (low_H, low_S, low_V), (high_H, high_S, high_V))
 
-cv.imshow(window_capture_name, hsvimage)
-cv.imshow(window_detection_name, thresholdimage)
 
+while True:
+    hsvimage = cv.cvtColor(image, cv.COLOR_BGR2HSV)
+    thresholdimage = cv.inRange(hsvimage, (low_H, low_S, low_V), (high_H, high_S, high_V))
+    cv.imshow(window_capture_name, hsvimage)
+    cv.imshow(window_detection_name, thresholdimage)
+    
+    key = cv.waitKey(30)
+    if key == ord('q') or key == 27:
+        break
+print(low_H, low_S, low_V,high_H, high_S, high_V)
 
+low_H_list.append(low_H)
+low_S_list.append(low_S)
+low_V_list.append(low_V)
 
-cv.waitKey(0)
-cv.destroyallwindows()
+high_H_list.append(high_H)
+high_S_list.append(high_S)
+high_V_list.append(high_V)
